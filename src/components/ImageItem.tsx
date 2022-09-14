@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,21 +10,32 @@ import {
   useWindowDimensions,
   GestureResponderEvent,
 } from 'react-native';
-import {useAppDispatch} from '../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {
   chooseImagesToDelete,
   Collection,
+  imagesToDelete,
 } from '../redux/imageCollection/imageCollectionSlice';
 
 import {CheckMark} from './CheckMark';
 
-export const ImageItem: FC<Collection> = props => {
+export const ImageItem = (props: {image: Collection}) => {
   const {width, height} = useWindowDimensions();
+
+  const {image} = props;
+
+  const chosenImages = useAppSelector(imagesToDelete).find(
+    image => image.uri === image.uri,
+  );
+
+  useEffect(() => {
+    console.log('chosenImages', chosenImages);
+  }, [chosenImages]);
 
   const imageSizeForPortrait = Math.floor(width / 4);
   const imageSizeForLandscape = Math.floor(width / 7);
 
-  const {uri, isRemoving} = props;
+  const {uri, isRemoving} = image;
 
   const dispatch = useAppDispatch();
   const navigation =
@@ -34,16 +45,15 @@ export const ImageItem: FC<Collection> = props => {
 
   const openFullScreenImage = () => {
     navigation.navigate('FullScreenImage', {
-      image: props,
+      image: image,
     });
   };
 
-  const handleSelect = (e:GestureResponderEvent) => {
-    console.log("props", props);
-    
+  const handleSelect = (e: any) => {
+    console.log(isRemoving, chosenImages);
 
     return isRemoving
-      ? dispatch(chooseImagesToDelete(props))
+      ? dispatch(chooseImagesToDelete(image))
       : openFullScreenImage();
   };
   return (
@@ -57,9 +67,9 @@ export const ImageItem: FC<Collection> = props => {
       ]}>
       <Pressable
         onPress={handleSelect}
-        onLongPress={() => dispatch(chooseImagesToDelete(props))}>
+        onLongPress={() => dispatch(chooseImagesToDelete(image))}>
         <View>
-          <CheckMark {...props} />
+          <CheckMark {...image} />
           <Image
             style={styles.image}
             source={{
@@ -76,7 +86,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     justifyContent: 'center',
     alignContent: 'space-around',
-    padding: 6,
+    padding: 10,
   },
   image: {
     height: '100%',

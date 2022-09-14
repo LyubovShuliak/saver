@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
 import {useAppSelector} from '../redux/hooks';
@@ -6,14 +6,29 @@ import {
   Collection,
   imagesToDelete,
 } from '../redux/imageCollection/imageCollectionSlice';
-import DeleteImageCheckMark from '../assets/images/delete_check_mark.svg';
+
 import SvgUri from 'react-native-svg-uri';
+import {useFocusEffect} from '@react-navigation/native';
 
 export const CheckMark: FC<Collection> = props => {
-  const chosenImages = useAppSelector(imagesToDelete).find(
-    image => props.uri === image.uri,
-  );
+  const [imageIsChosen, setImageIsChosen] = useState<boolean>(false);
+  const chosenImages = useAppSelector(imagesToDelete);
   const {isRemoving} = props;
+
+  useEffect(() => {
+    if (chosenImages) {
+      let isChosen = chosenImages
+        ? chosenImages.find(image => image.fileName === props.fileName)
+        : false;
+      setImageIsChosen(isChosen ? true : false);
+    } else {
+      setImageIsChosen(false);
+    }
+  }, [chosenImages]);
+
+  useEffect(() => {
+    console.log('imageIsChosen', imageIsChosen);
+  }, [imageIsChosen]);
 
   return (
     <>
@@ -26,18 +41,17 @@ export const CheckMark: FC<Collection> = props => {
             cx="10"
             cy="10"
             r="10"
-            fill={chosenImages ? '#00b3b3' : 'black'}
-            opacity={chosenImages ? 1 : 0.5}
+            fill={imageIsChosen ? '#00b3b3' : 'black'}
+            opacity={1}
           />
-          {chosenImages ? (
+          {imageIsChosen ? (
             <SvgUri
-              fill='white'
+              fill="white"
               height="18"
               width="20"
               source={require('../assets/images/delete_check_mark.svg')}
             />
-          ) : 
-          null}
+          ) : null}
         </Svg>
       ) : null}
     </>
@@ -47,13 +61,16 @@ const styles = StyleSheet.create({
   svgStyle: {
     position: 'absolute',
     zIndex: 1,
-    right: 0,
+    right: -8,
+    top: -8,
     margin: 2,
+    borderWidth: 6,
+    borderColor: 'white',
   },
 
   deleteCircle: {
     borderColor: 'white',
-    borderWidth: 2,
+    borderWidth: 6,
     borderRadius: 10,
   },
 });

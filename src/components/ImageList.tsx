@@ -4,7 +4,6 @@ import {useAppSelector} from '../redux/hooks';
 import {imagesCollection} from '../redux/imageCollection/imageCollectionSlice';
 import {ImageItem} from './ImageItem';
 
-
 export const ImageList = () => {
   const collection = useAppSelector(imagesCollection);
 
@@ -13,7 +12,7 @@ export const ImageList = () => {
       {collection.length ? (
         <ScrollView contentContainerStyle={styles.imageContainer}>
           {collection.map(image => (
-            <ImageItem {...image} key={image.fileName} />
+            <ImageItem key={image.fileName + '-1'} image={image} />
           ))}
         </ScrollView>
       ) : (

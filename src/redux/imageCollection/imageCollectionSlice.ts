@@ -6,8 +6,6 @@ import {RootState} from '../store';
 import RNFS, {UploadFileItem} from 'react-native-fs';
 import {Platform} from 'react-native';
 
-
-
 export type Collection = Asset & {
   isRemoving: boolean;
 };
@@ -38,7 +36,7 @@ export const imageSlice = createSlice({
       // adding choose circle on every image
       state.collection = state.collection.map(image => ({
         ...image,
-        isRemoving: true,
+        isRemoving: !image.isRemoving || true,
       }));
 
       state.collectionIsEditing = true;
@@ -46,6 +44,7 @@ export const imageSlice = createSlice({
       const shouldDelete = state.imagesToDelete.find(
         image => image.fileName === action.payload.fileName,
       );
+      console.log('shouldDelete', shouldDelete);
 
       // toggle checkmark in the circle
       if (shouldDelete) {
