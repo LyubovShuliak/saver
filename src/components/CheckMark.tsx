@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
 import {useAppSelector} from '../redux/hooks';
 import {
@@ -7,6 +7,7 @@ import {
   imagesToDelete,
 } from '../redux/imageCollection/imageCollectionSlice';
 import DeleteImageCheckMark from '../assets/images/delete_check_mark.svg';
+import SvgUri from 'react-native-svg-uri';
 
 export const CheckMark: FC<Collection> = props => {
   const chosenImages = useAppSelector(imagesToDelete).find(
@@ -28,15 +29,16 @@ export const CheckMark: FC<Collection> = props => {
             fill={chosenImages ? '#00b3b3' : 'black'}
             opacity={chosenImages ? 1 : 0.5}
           />
+          {chosenImages ? (
+            <SvgUri
+              fill='white'
+              height="18"
+              width="20"
+              source={require('../assets/images/delete_check_mark.svg')}
+            />
+          ) : 
+          null}
         </Svg>
-      ) : null}
-      {chosenImages ? (
-        <DeleteImageCheckMark
-          color="white"
-          height="18"
-          width="18"
-          style={styles.svgStyle}
-        />
       ) : null}
     </>
   );

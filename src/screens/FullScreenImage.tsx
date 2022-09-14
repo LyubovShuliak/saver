@@ -7,7 +7,7 @@ import {FullScreenHeader} from '../components/FullScreenHeader';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {FullScreenImageScreenRouteProp} from '../../App';
 
-export const FullScreenImage: FC = () => {
+export const FullScreenImage = () => {
   const [controlBarVisibility, setControlBarVisibility] = useState(true);
   const navigation = useNavigation();
   const route = useRoute<FullScreenImageScreenRouteProp>();

@@ -6,21 +6,24 @@ import {
   StatusBar,
   SafeAreaView,
   View,
+  Text,
 } from 'react-native';
 
 import ReturnButton from '../assets/images/return_to_main_screen.svg';
 import DeleteButton from '../assets/images/delete_button.svg';
+import { SvgUri } from 'react-native-svg';
+import SvgContainer from 'react-native-svg-uri';
 
 type Header = {
   handleClose: () => void;
   handleDelete: () => void;
   controlBarVisibility: boolean;
 };
-export const FullScreenHeader: FC<Header> = ({
+export const FullScreenHeader= ({
   handleClose,
   handleDelete,
   controlBarVisibility,
-}) => {
+}: Header) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const fadeIn = useCallback(() => {
@@ -47,6 +50,10 @@ export const FullScreenHeader: FC<Header> = ({
     }
   }, [controlBarVisibility, fadeIn, fadeOut]);
 
+  useEffect(()=>{
+
+  }, )
+
   return (   
     <SafeAreaView style={styles.buttonsContainer}>
       <Animated.View
@@ -62,10 +69,23 @@ export const FullScreenHeader: FC<Header> = ({
           },
         ]}>
         <Pressable onPress={handleClose} hitSlop={20}>
-          <ReturnButton height={20} width={20} />
+        <Text>close</Text>
+         {/* <SvgUri height={20} width={20} /> */}
+         <SvgContainer
+           height="18"
+           width="18"
+           source={require('../assets/images/return_to_main_screen.svg')}
+             />
+          {/* <ReturnButton height={20} width={20} /> */}
         </Pressable>
         <Pressable onPress={handleDelete} hitSlop={20}>
-          <DeleteButton width={20} height={20} />
+          <Text>delete</Text>
+          {/* <DeleteButton width={20} height={20} /> */}
+          <SvgContainer
+           height="18"
+           width="18"
+           source={require('../assets/images/delete_check_mark.svg')}
+             />
         </Pressable>
       </Animated.View>
     </SafeAreaView>

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack'
+import {StackNavigationProp} from '@react-navigation/stack';
 
 import React, {FC} from 'react';
 import {
@@ -8,6 +8,7 @@ import {
   Pressable,
   View,
   useWindowDimensions,
+  GestureResponderEvent,
 } from 'react-native';
 import {useAppDispatch} from '../redux/hooks';
 import {
@@ -37,8 +38,14 @@ export const ImageItem: FC<Collection> = props => {
     });
   };
 
-  const handleSelect = () =>
-    isRemoving ? dispatch(chooseImagesToDelete(props)) : openFullScreenImage();
+  const handleSelect = (e:GestureResponderEvent) => {
+    console.log("props", props);
+    
+
+    return isRemoving
+      ? dispatch(chooseImagesToDelete(props))
+      : openFullScreenImage();
+  };
   return (
     <View
       style={[

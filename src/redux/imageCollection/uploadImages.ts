@@ -28,3 +28,19 @@ export const getImages = createAsyncThunk(
   },
 );
 
+export const getAppImages = createAsyncThunk(
+  'uploadImages',
+  async (params: Params) => {
+    const response: ImagePickerResponse =
+      params.source === 'gallery'
+        ? await launchImageLibrary(params.options)
+        : await launchCamera(params.options);
+
+    if (response.assets) {
+      return response.assets;
+    }
+
+    return [];
+  },
+);
+

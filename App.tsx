@@ -7,7 +7,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {FullScreenImage} from './src/screens/FullScreenImage';
 import {Collection} from './src/redux/imageCollection/imageCollectionSlice';
 
-import {initialize} from "parse";
 
 
 type RootStackParamList = {
@@ -25,7 +24,6 @@ export type FullScreenImageScreenRouteProp = RouteProp<
 >;
 
 const App = () => {
-
 
   return (
     <Provider store={store}>

@@ -1,8 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {getImages} from './uploadImages';
-import {Asset, launchImageLibrary} from 'react-native-image-picker';
-import Parse from 'parse/react-native.js';
+import {Asset} from 'react-native-image-picker';
 import {RootState} from '../store';
+
+import RNFS, {UploadFileItem} from 'react-native-fs';
+import {Platform} from 'react-native';
+
+
 
 export type Collection = Asset & {
   isRemoving: boolean;
@@ -94,26 +98,23 @@ export const imageSlice = createSlice({
         state.collection.push(...newImages);
         state.isLoading = false;
 
-        state.collection.forEach( async (image)=>{
-          const {base64, fileName} = image as {base64: string, fileName: string};
-          const  parseFile = new  Parse.File(fileName, {base64});
-        
-          // 2. Save the file
-          try {
-          const responseFile = await  parseFile.save();
-          const Gallery = Parse.Object.extend('Gallery');
-          const gallery = new  Gallery();
-          gallery.set('picture', responseFile);
-        
-          await gallery.save();
-          console.log('The file has been saved to Back4app.');
-          } catch (error) {
-            console.log(
-              'The file either could not be read, or could not be saved to Back4app.',
-            );
-          }
-        })
-       
+        console.log(action.payload);
+        const imagePath = `${RNFS.DocumentDirectoryPath}/`;
+        console.log(RNFS.DocumentDirectoryPath);
+
+        if (Platform.OS === 'android' && action.payload.length) {
+          RNFS.copyFile(
+            action.payload[0].uri as string,
+            imagePath + action.payload[0].fileName,
+          )
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => {
+              console.log('ERROR: image file write failed!!!');
+              console.log(err.message, err.code);
+            });
+        }
       },
     );
   },

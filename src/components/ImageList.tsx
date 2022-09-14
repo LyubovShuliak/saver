@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet, Image, View, Text} from 'react-native';
 import {useAppSelector} from '../redux/hooks';
 import {imagesCollection} from '../redux/imageCollection/imageCollectionSlice';
 import {ImageItem} from './ImageItem';
-import Parse from 'parse/react-native.js'
+
 
 export const ImageList = () => {
   const collection = useAppSelector(imagesCollection);
