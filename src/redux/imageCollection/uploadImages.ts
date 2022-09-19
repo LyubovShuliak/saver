@@ -5,6 +5,8 @@ import {
   launchCamera,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import RNFS, {ReadDirItem, UploadFileItem} from 'react-native-fs';
+import {Platform} from 'react-native';
 
 import Parse from 'parse/react-native';
 export type Params = {
@@ -28,19 +30,25 @@ export const getImages = createAsyncThunk(
   },
 );
 
-export const getAppImages = createAsyncThunk(
-  'uploadImages',
-  async (params: Params) => {
-    const response: ImagePickerResponse =
-      params.source === 'gallery'
-        ? await launchImageLibrary(params.options)
-        : await launchCamera(params.options);
+export const getAppImages = createAsyncThunk('uploadImages', async () => {
+  const imagePath = `${
+    Platform.OS === 'android' ? RNFS.DocumentDirectoryPath : RNFS.MainBundlePath
+  }`;
+  const files: ReadDirItem[] = await RNFS.readDir(imagePath);
+  try {
+    // console.log(files);
 
-    if (response.assets) {
-      return response.assets;
-    }
-
+    return (
+      files.slice(1).map(file => ({
+        ...file,
+        isDirectory: null,
+        isFile: null,
+        fileName: file.name,
+        uri: 'file://' + file.path,
+        mtime: file.mtime?.toString(),
+      })) || []
+    );
+  } catch (error) {
     return [];
-  },
-);
-
+  }
+});

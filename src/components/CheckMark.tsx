@@ -7,10 +7,9 @@ import {
   imagesToDelete,
 } from '../redux/imageCollection/imageCollectionSlice';
 
-import SvgUri from 'react-native-svg-uri';
-import {useFocusEffect} from '@react-navigation/native';
+import SvgUri from 'react-native-svg-uri-updated';
 
-export const CheckMark: FC<Collection> = props => {
+export const CheckMark = (props: Collection) => {
   const [imageIsChosen, setImageIsChosen] = useState<boolean>(false);
   const chosenImages = useAppSelector(imagesToDelete);
   const {isRemoving} = props;
@@ -32,7 +31,7 @@ export const CheckMark: FC<Collection> = props => {
 
   return (
     <>
-      {isRemoving ? (
+      {isRemoving && imageIsChosen ? (
         <Svg
           height="20"
           width="20"
@@ -41,17 +40,24 @@ export const CheckMark: FC<Collection> = props => {
             cx="10"
             cy="10"
             r="10"
-            fill={imageIsChosen ? '#00b3b3' : 'black'}
+            fill={'#00b3b3'}
             opacity={1}
+            stroke="white"
+            strokeWidth="1"
           />
-          {imageIsChosen ? (
-            <SvgUri
-              fill="white"
-              height="18"
-              width="20"
-              source={require('../assets/images/delete_check_mark.svg')}
-            />
-          ) : null}
+          <SvgUri
+            fill="white"
+            height="18"
+            width="20"
+            source={require('../assets/images/delete_check_mark.svg')}
+          />
+        </Svg>
+      ) : isRemoving ? (
+        <Svg
+          height="20"
+          width="20"
+          style={[styles.deleteCircle, styles.svgStyle]}>
+          <Circle cx="10" cy="10" r="10" fill={'black'} opacity={1} />
         </Svg>
       ) : null}
     </>

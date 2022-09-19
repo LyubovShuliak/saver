@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getImages} from './uploadImages';
+import {getAppImages, getImages} from './uploadImages';
 import {Asset} from 'react-native-image-picker';
 import {RootState} from '../store';
 
@@ -85,7 +85,19 @@ export const imageSlice = createSlice({
     builder.addCase(getImages.pending, state => {
       state.isLoading = true;
     });
+    builder.addCase(getAppImages.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAppImages.fulfilled, (state, action) => {
+      // console.log(action.payload);
 
+      const newImages = action.payload.map(image => ({
+        ...image,
+        isRemoving: false,
+      }));
+      state.isLoading = false;
+      state.collection.push(...newImages);
+    });
     builder.addCase(
       getImages.fulfilled,
       (state, action: PayloadAction<Asset[]>) => {
@@ -93,15 +105,18 @@ export const imageSlice = createSlice({
           ...image,
           isRemoving: false,
         }));
+        console.log(action.payload);
 
         state.collection.push(...newImages);
         state.isLoading = false;
 
-        console.log(action.payload);
-        const imagePath = `${RNFS.DocumentDirectoryPath}/`;
-        console.log(RNFS.DocumentDirectoryPath);
+        const imagePath = `${
+          Platform.OS === 'android'
+            ? RNFS.DocumentDirectoryPath
+            : RNFS.MainBundlePath
+        }/`;
 
-        if (Platform.OS === 'android' && action.payload.length) {
+        if (action.payload.length) {
           RNFS.copyFile(
             action.payload[0].uri as string,
             imagePath + action.payload[0].fileName,
